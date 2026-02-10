@@ -1,11 +1,19 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+from epl.extensions import db, migrate
+from epl.core.routes import core_bp
+from epl.clubs.routes import club_bp
+from epl.players.routes import player_bp
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///eql.sqlite'
-
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-
-from epl import models, routes
+def create_app():
+  app = Flask(__name__)
+  app.config['SQLCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/epl_s02_db'
+  app.scret_key =  b 'hohvxzd,hooph'
+  
+  db.init_app(app)
+  migrate.init_app(app, db)
+  
+  app.register_blueprint(core_bp, url_prefix='/')
+  app.register_blueprint(club_bp, url_prefix='/clubs')
+  app.register_blueprint(player_bp, url_prefix='/players')
+  
+  return app
